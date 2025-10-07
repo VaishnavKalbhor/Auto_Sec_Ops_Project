@@ -13,3 +13,7 @@ Built the telemetry service: FastAPI app with in-memory storage, POST /telemetry
 ## Day 3
 
 Built the vehicle registry service: create/list/get vehicles, region validation (EU/US/APAC only), and duplicate vehicle_id rejection (409). 6 pytest cases, all passing.
+
+## Day 4
+
+Built the diagnostics service: accepts DTC codes with severity validation (low/medium/high/critical), returns list of codes per vehicle. 5 pytest cases, all passing. All three services now exist and their test suites pass locally (16 tests total).
