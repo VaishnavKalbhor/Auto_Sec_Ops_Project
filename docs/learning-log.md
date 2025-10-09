@@ -17,3 +17,7 @@ Built the vehicle registry service: create/list/get vehicles, region validation 
 ## Day 4
 
 Built the diagnostics service: accepts DTC codes with severity validation (low/medium/high/critical), returns list of codes per vehicle. 5 pytest cases, all passing. All three services now exist and their test suites pass locally (16 tests total).
+
+## Day 5
+
+Wrote Dockerfiles for all three services (python:3.12-slim base, non-root-friendly, HEALTHCHECK hitting /health) and docker/docker-compose.yml wiring them up on ports 8001-8003. This step is meant to be run with Docker Desktop/Engine on a dev machine; the sandbox this project was scaffolded in doesn't have a Docker daemon, so this was verified by structural review rather than an actual `docker compose up` run -- worth double-checking locally before treating it as done.
