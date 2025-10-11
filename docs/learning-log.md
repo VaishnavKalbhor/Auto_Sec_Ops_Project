@@ -21,3 +21,7 @@ Built the diagnostics service: accepts DTC codes with severity validation (low/m
 ## Day 5
 
 Wrote Dockerfiles for all three services (python:3.12-slim base, non-root-friendly, HEALTHCHECK hitting /health) and docker/docker-compose.yml wiring them up on ports 8001-8003. This step is meant to be run with Docker Desktop/Engine on a dev machine; the sandbox this project was scaffolded in doesn't have a Docker daemon, so this was verified by structural review rather than an actual `docker compose up` run -- worth double-checking locally before treating it as done.
+
+## Day 6
+
+Added scripts/generate_vehicle_events.py to simulate a full vehicle flow (register -> telemetry -> diagnostic) against live services, and tests/integration/test_vehicle_flow.py which drives the same flow in-process across all three FastAPI apps. This isn't real service-to-service networking yet -- each service is still independent with no shared database -- but it proves the automotive data flow works end-to-end. 4/4 integration tests passing.
