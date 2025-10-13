@@ -25,3 +25,7 @@ Wrote Dockerfiles for all three services (python:3.12-slim base, non-root-friend
 ## Day 6
 
 Added scripts/generate_vehicle_events.py to simulate a full vehicle flow (register -> telemetry -> diagnostic) against live services, and tests/integration/test_vehicle_flow.py which drives the same flow in-process across all three FastAPI apps. This isn't real service-to-service networking yet -- each service is still independent with no shared database -- but it proves the automotive data flow works end-to-end. 4/4 integration tests passing.
+
+## Day 7
+
+Added .github/workflows/ci.yml: a matrix job running pytest for each of the three services, a separate job running the cross-service integration tests, and a job building each service's Docker image. Added a CI badge placeholder to the README (needs the real GitHub username once the repo is pushed).

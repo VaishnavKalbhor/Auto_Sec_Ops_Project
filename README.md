@@ -2,6 +2,9 @@
 
 A DevSecOps portfolio project for automotive-style connected vehicle services.
 
+![CI](https://github.com/<your-github-username>/autosecureops/actions/workflows/ci.yml/badge.svg)
+
+
 ## Overview
 
 AutoSecureOps is a connected-vehicle DevSecOps portfolio project. It simulates a small automotive backend where vehicles send telemetry and diagnostic data. The main purpose is to demonstrate secure CI/CD, automated testing, containerization, Kubernetes deployment, and security scanning.
