@@ -29,3 +29,7 @@ Added scripts/generate_vehicle_events.py to simulate a full vehicle flow (regist
 ## Day 7
 
 Added .github/workflows/ci.yml: a matrix job running pytest for each of the three services, a separate job running the cross-service integration tests, and a job building each service's Docker image. Added a CI badge placeholder to the README (needs the real GitHub username once the repo is pushed).
+
+## Day 8
+
+Added .github/workflows/security.yml with three jobs: Gitleaks secret scanning, pip-audit dependency scanning per service, and Semgrep SAST (security-audit + python rulesets). Added tests/security/insecure_demo.py with an intentionally vulnerable subprocess(shell=True) pattern plus the fixed version, and documented the finding in docs/security-findings.md. Tried to install semgrep locally to confirm detection before pushing, but the install didn't finish in this sandbox (large package, slow network) -- this needs a real run in GitHub Actions (or a local machine with a faster connection) to confirm the rule actually fires before relying on it.
