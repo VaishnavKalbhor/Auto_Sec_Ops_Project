@@ -1,0 +1,39 @@
+name: Container Scan
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - telemetry-service
+          - vehicle-registry-service
+          - diagnostics-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t autosecureops/${{ matrix.service }}:scan services/${{ matrix.service }}
+
+      - name: Scan image with Trivy (fail on CRITICAL only)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: autosecureops/${{ matrix.service }}:scan
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '0'
+          vuln-type: 'os,library'
+
+      - name: Fail pipeline only on CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: autosecureops/${{ matrix.service }}:scan
+          format: 'table'
+          severity: 'CRITICAL'
+          exit-code: '1'
+          vuln-type: 'os,library'

@@ -33,3 +33,7 @@ Added .github/workflows/ci.yml: a matrix job running pytest for each of the thre
 ## Day 8
 
 Added .github/workflows/security.yml with three jobs: Gitleaks secret scanning, pip-audit dependency scanning per service, and Semgrep SAST (security-audit + python rulesets). Added tests/security/insecure_demo.py with an intentionally vulnerable subprocess(shell=True) pattern plus the fixed version, and documented the finding in docs/security-findings.md. Tried to install semgrep locally to confirm detection before pushing, but the install didn't finish in this sandbox (large package, slow network) -- this needs a real run in GitHub Actions (or a local machine with a faster connection) to confirm the rule actually fires before relying on it.
+
+## Day 9
+
+Added .github/workflows/codeql.yml (GitHub-native SAST, weekly scheduled scan plus PR/push triggers) and container-scan.yml (Trivy against each service's built image, following the documented gate policy: report HIGH+CRITICAL, only fail the pipeline on CRITICAL). Also added deploy-dev.yml as a manual workflow_dispatch job that dry-run validates the Kubernetes manifests and lints the Helm chart (both added on Day 11-12) before any real deploy step is wired up. Wrote docs/devsecops-pipeline.md tying all the workflows together with the gate policy table.
