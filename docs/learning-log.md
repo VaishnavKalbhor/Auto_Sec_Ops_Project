@@ -37,3 +37,7 @@ Added .github/workflows/security.yml with three jobs: Gitleaks secret scanning, 
 ## Day 9
 
 Added .github/workflows/codeql.yml (GitHub-native SAST, weekly scheduled scan plus PR/push triggers) and container-scan.yml (Trivy against each service's built image, following the documented gate policy: report HIGH+CRITICAL, only fail the pipeline on CRITICAL). Also added deploy-dev.yml as a manual workflow_dispatch job that dry-run validates the Kubernetes manifests and lints the Helm chart (both added on Day 11-12) before any real deploy step is wired up. Wrote docs/devsecops-pipeline.md tying all the workflows together with the gate policy table.
+
+## Day 10
+
+Added .github/workflows/dast.yml running an OWASP ZAP baseline scan against the telemetry-service (started in-workflow, scanned, report uploaded as an artifact; SAST covers source code, DAST covers the running app from the outside). Also added tests/security/test_basic_api_security.py -- parametrized across all three services -- checking that /health doesn't leak secrets, unknown routes 404, and malformed payloads never return a raw 500. 12/12 passing locally.
