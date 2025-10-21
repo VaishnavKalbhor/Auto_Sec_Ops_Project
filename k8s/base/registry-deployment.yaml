@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle-registry-service
+  namespace: autosecureops
+  labels:
+    app: vehicle-registry-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vehicle-registry-service
+  template:
+    metadata:
+      labels:
+        app: vehicle-registry-service
+    spec:
+      serviceAccountName: autosecureops-service-account
+      containers:
+        - name: vehicle-registry-service
+          image: autosecureops/vehicle-registry-service:latest
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL

@@ -41,3 +41,7 @@ Added .github/workflows/codeql.yml (GitHub-native SAST, weekly scheduled scan pl
 ## Day 10
 
 Added .github/workflows/dast.yml running an OWASP ZAP baseline scan against the telemetry-service (started in-workflow, scanned, report uploaded as an artifact; SAST covers source code, DAST covers the running app from the outside). Also added tests/security/test_basic_api_security.py -- parametrized across all three services -- checking that /health doesn't leak secrets, unknown routes 404, and malformed payloads never return a raw 500. 12/12 passing locally.
+
+## Day 11
+
+Added Kubernetes base manifests: a dedicated `autosecureops` namespace, and a Deployment + Service per microservice (2 replicas each) with readiness/liveness probes on /health, resource requests/limits, and a securityContext (runAsNonRoot, no privilege escalation, all capabilities dropped). Validated all 7 YAML files parse correctly with PyYAML -- I don't have a real cluster (kind/minikube) in this sandbox to `kubectl apply` against, so that's still untested against an actual API server and worth a real dry-run before relying on it.
