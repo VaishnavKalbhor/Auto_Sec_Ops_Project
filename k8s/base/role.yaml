@@ -1,0 +1,11 @@
+# Minimal role: services only ever need to read their own pod/config info
+# for health/readiness tooling. No write access, no cluster-wide access.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: autosecureops-pod-reader
+  namespace: autosecureops
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "configmaps"]
+    verbs: ["get", "list"]

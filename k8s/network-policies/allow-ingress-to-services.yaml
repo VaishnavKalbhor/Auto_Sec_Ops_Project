@@ -1,0 +1,32 @@
+# Allow the three AutoSecureOps services to receive traffic from each other
+# (service-to-service calls, e.g. the simulator/integration flow) and from
+# any pod in the namespace labeled as a client, on port 8000 only.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-services
+  namespace: autosecureops
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - telemetry-service
+          - vehicle-registry-service
+          - diagnostics-service
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - telemetry-service
+                  - vehicle-registry-service
+                  - diagnostics-service
+      ports:
+        - protocol: TCP
+          port: 8000

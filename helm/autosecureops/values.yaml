@@ -1,0 +1,31 @@
+namespace: autosecureops
+
+image:
+  repository: autosecureops
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  port: 80
+  targetPort: 8000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+services:
+  - name: telemetry-service
+    image: telemetry-service
+    env: []
+  - name: vehicle-registry-service
+    image: vehicle-registry-service
+    env: []
+  - name: diagnostics-service
+    image: diagnostics-service
+    env: []

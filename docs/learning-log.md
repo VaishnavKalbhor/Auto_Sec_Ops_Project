@@ -45,3 +45,7 @@ Added .github/workflows/dast.yml running an OWASP ZAP baseline scan against the 
 ## Day 11
 
 Added Kubernetes base manifests: a dedicated `autosecureops` namespace, and a Deployment + Service per microservice (2 replicas each) with readiness/liveness probes on /health, resource requests/limits, and a securityContext (runAsNonRoot, no privilege escalation, all capabilities dropped). Validated all 7 YAML files parse correctly with PyYAML -- I don't have a real cluster (kind/minikube) in this sandbox to `kubectl apply` against, so that's still untested against an actual API server and worth a real dry-run before relying on it.
+
+## Day 12
+
+Hand-wrote the Helm chart (helm binary isn't available in this sandbox, so I built Chart.yaml/values.yaml/templates directly rather than running `helm create`) -- values.yaml drives image repo/tag, replica count, service ports, resources, and a per-service env list, with deployment/service templates ranging over `.Values.services`. Added NetworkPolicies: default-deny-ingress as the baseline, then explicit allows for service-to-service traffic on 8000 and for a `monitoring` namespace to scrape /metrics. Added a minimal ServiceAccount + Role (get/list on pods and configmaps only) + RoleBinding under k8s/base, referenced by both the raw manifests and the Helm templates. All plain-YAML files validated with PyYAML; the Helm templates use Go templating so they weren't rendered/validated here (no helm binary) -- worth a `helm template` / `helm lint` pass locally before treating the chart as verified.

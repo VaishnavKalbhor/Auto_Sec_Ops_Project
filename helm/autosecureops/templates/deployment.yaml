@@ -1,0 +1,53 @@
+{{- range .Values.services }}
+{{- $svc := . }}
+{{- $root := $.Values }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $root.namespace }}
+  labels:
+    app: {{ $svc.name }}
+spec:
+  replicas: {{ $root.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $svc.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $svc.name }}
+    spec:
+      serviceAccountName: autosecureops-service-account
+      containers:
+        - name: {{ $svc.name }}
+          image: "{{ $root.image.repository }}/{{ $svc.image }}:{{ $root.image.tag }}"
+          imagePullPolicy: {{ $root.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $root.service.targetPort }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ $root.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ $root.service.targetPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml $root.resources | nindent 12 }}
+          {{- if $svc.env }}
+          env:
+            {{- toYaml $svc.env | nindent 12 }}
+          {{- end }}
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+---
+{{- end }}

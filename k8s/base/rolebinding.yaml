@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: autosecureops-pod-reader-binding
+  namespace: autosecureops
+subjects:
+  - kind: ServiceAccount
+    name: autosecureops-service-account
+    namespace: autosecureops
+roleRef:
+  kind: Role
+  name: autosecureops-pod-reader
+  apiGroup: rbac.authorization.k8s.io
