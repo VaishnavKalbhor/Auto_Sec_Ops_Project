@@ -1,0 +1,27 @@
+# ArgoCD Application pointing at the Helm chart in this repo. This is
+# documented/prepared here rather than exercised against a live ArgoCD
+# instance in this sandbox -- see docs/observability.md and the learning
+# log for what's actually been run vs. what's config-ready.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: autosecureops
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<your-github-username>/autosecureops.git
+    targetRevision: main
+    path: helm/autosecureops
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: autosecureops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
