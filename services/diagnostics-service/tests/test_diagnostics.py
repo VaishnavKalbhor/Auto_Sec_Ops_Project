@@ -1,10 +1,15 @@
+import importlib.util
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+_MAIN_PATH = Path(__file__).resolve().parents[1] / "main.py"
+_spec = importlib.util.spec_from_file_location("diagnostics_service_main", _MAIN_PATH)
+_module = importlib.util.module_from_spec(_spec)
+sys.modules[_spec.name] = _module
+_spec.loader.exec_module(_module)
+app = _module.app
 
 from fastapi.testclient import TestClient
-from main import app
 
 client = TestClient(app)
 

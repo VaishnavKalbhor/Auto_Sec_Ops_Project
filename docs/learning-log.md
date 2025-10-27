@@ -53,3 +53,13 @@ Hand-wrote the Helm chart (helm binary isn't available in this sandbox, so I bui
 ## Day 13
 
 Added argocd/application.yaml (GitOps: points at the Helm chart, automated sync + self-heal + CreateNamespace) and docs/observability.md documenting the /metrics endpoints already present on all three services since Day 2-4 (prometheus-fastapi-instrumentator) and what a Prometheus/Grafana addition to docker-compose would look like. Confirmed all three services already expose /metrics (checked main.py for each) -- no code changes needed here, just documentation. ArgoCD manifest is unverified against a real cluster; noted as such in the doc rather than claiming it works.
+
+## Day 14
+
+Final polish pass. Added tests/load/basic_load_test.py and actually ran it against a live telemetry-service instance (300/300 succeeded, ~1.3ms average) rather than just writing it and hoping. Added docs/final-project-summary.md (goals, controls table, honest limitations, future work) and docs/screenshots/README.md listing exactly which screenshots still need to be captured against a real run. Rewrote README.md into the full structure (overview, why, architecture, services table, DevSecOps features table, getting started, docs links, screenshots, learning outcomes).
+
+Also caught and fixed a real bug during a full-repo verification pass: running `pytest` across all three services from the repo root failed, first with a `tests` package name collision (all three services + top-level tests/integration share the package name "tests"), then -- after fixing that with a root pytest.ini (`--import-mode=importlib`) -- with a second, subtler bug where all three services' test files did `from main import app`, so Python's module cache reused whichever service's `main.py` loaded first for all three, silently testing the wrong app in two of them. Fixed by giving each service's test file a uniquely-named module import (matching the pattern already used in tests/integration and tests/security). Full suite: 32/32 passing from repo root.
+
+## Known gaps going into review
+
+Documented in docs/final-project-summary.md, but worth repeating here since it's the honest state of things: Docker Compose, the Kubernetes manifests, the Helm chart, and the security scanners (Semgrep/Gitleaks/Trivy/ZAP/CodeQL) were all written carefully and validated where a local check was possible (YAML syntax, pytest), but none of them have been run for real in this sandbox (no Docker daemon, no cluster, no helm binary, and semgrep's install didn't finish over this connection). The first real GitHub Actions run and the first real `docker compose up` / `kubectl apply` / `helm lint` are the actual verification of those pieces -- treat this build as "ready to verify," not "verified."
